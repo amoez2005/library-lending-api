@@ -25,7 +25,7 @@ The generated JaCoCo report is the source of truth for coverage percentages; no 
 ## Course demonstration (students)
 
 1. Show the repository owner, collaborator, assigned issues, branch history and merged pull requests.
-2. Run the service and populate demonstration titles with `scripts/seed-demo.ps1`.
+2. Run the service and populate demonstration titles with `node scripts/seed-demo.mjs`.
 3. Open the frontend, search for a title and create/edit a book.
 4. In Swagger Editor, import `docs/openapi.json`. Inspect the schema and execute requests if the browser permits localhost access. The local Swagger UI is also available.
 5. In Postman, import the collection and environment, run the numbered collection and show real status/body/header results.

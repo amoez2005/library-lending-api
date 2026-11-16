@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +71,7 @@ public class BookController {
 
   /** Creates a title with a canonical Location header. */
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create an available book")
   public ResponseEntity<EntityModel<Book>> create(@Valid @RequestBody BookRequest request) {
     Book book = service.create(request);
@@ -88,6 +90,7 @@ public class BookController {
 
   /** Deletes an available resource. */
   @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(summary = "Delete an available book")
   public ResponseEntity<Void> delete(@PathVariable long id) {
     service.delete(id);

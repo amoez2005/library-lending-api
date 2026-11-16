@@ -11,13 +11,13 @@ Install **JDK 21 or newer**. Java 21 is the CI baseline; the project was also ve
 Windows PowerShell:
 
 ```powershell
-.\scripts\start.ps1
+.\scripts\start.cmd
 ```
 
 In a second terminal, optionally populate six demonstration titles:
 
 ```powershell
-.\scripts\seed-demo.ps1
+node scripts/seed-demo.mjs
 ```
 
 Linux/macOS (with `JAVA_HOME` pointing to a JDK):
@@ -25,6 +25,8 @@ Linux/macOS (with `JAVA_HOME` pointing to a JDK):
 ```sh
 ./mvnw spring-boot:run
 ```
+
+The optional seed command needs Node.js 18+. The API itself needs only a JDK. The `.cmd` starter also works when local PowerShell scripts are disabled.
 
 Open:
 
