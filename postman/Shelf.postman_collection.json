@@ -1,0 +1,510 @@
+{
+  "info": {
+    "name": "Shelf \u2014 Library Acceptance",
+    "description": "Run sequentially against a local demo. Creates and deletes one uniquely identified test book.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Discover API",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.collectionVariables.set('isbn', '978' + String(Date.now()).slice(-10));",
+              "pm.test('Catalog is discoverable', () => pm.expect(pm.response.json()._links.books.href).to.include('/api/books'));",
+              "pm.test('Stateless response', () => pm.expect(pm.response.headers.has('Set-Cookie')).to.be.false);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Create book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Postman Acceptance Book\", \"author\": \"Shelf QA\", \"isbn\": \"{{isbn}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "const book = pm.response.json(); pm.collectionVariables.set('bookId', book.id);",
+              "pm.test('Creation Location', () => pm.expect(pm.response.headers.get('Location')).to.include('/api/books/' + book.id));",
+              "pm.test('Available book offers borrow', () => pm.expect(book._links.borrow.type).to.eql('application/json'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Read and cache book",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.collectionVariables.set('etag', pm.response.headers.get('ETag'));",
+              "pm.test('ETag present', () => pm.expect(pm.response.headers.get('ETag')).to.be.a('string'));",
+              "pm.test('Cache must revalidate', () => pm.expect(pm.response.headers.get('Cache-Control')).to.eql('no-cache'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Conditional read",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-None-Match",
+            "value": "{{etag}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 304', () => pm.response.to.have.status(304));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Reject duplicate ISBN",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Postman Acceptance Book\", \"author\": \"Shelf QA\", \"isbn\": \"{{isbn}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Reject invalid fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"\", \"author\": \"\", \"isbn\": \"x\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('Problem details', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/problem+json'));",
+              "pm.test('Validation errors', () => pm.expect(pm.response.json().errors.length).to.be.greaterThan(0));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Reject invalid page size",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books?size=101"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Search catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books?q=Postman%20Acceptance&size=1"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Search contains created title', () => pm.expect(pm.response.json().items[0].title).to.include('Postman Acceptance'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Update title",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Postman Acceptance Revised\", \"author\": \"Shelf QA\", \"isbn\": \"{{isbn}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Borrow book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}/borrow"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const book = pm.response.json();",
+              "pm.test('Borrowed state', () => pm.expect(book.borrowed).to.be.true);",
+              "pm.test('State-dependent return link', () => pm.expect(book._links.return.href).to.include('/return'));",
+              "pm.test('Borrow link removed', () => pm.expect(book._links).not.to.have.property('borrow'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 Cache invalidated by mutation",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-None-Match",
+            "value": "{{etag}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('New ETag', () => pm.expect(pm.response.headers.get('ETag')).not.to.eql(pm.collectionVariables.get('etag')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Reject double borrowing",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}/borrow"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Protect active loan from deletion",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 Return book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}/return"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returned state', () => pm.expect(pm.response.json().borrowed).to.be.false);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 Reject duplicate return",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}/return"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 Delete test book",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 Confirm deleted book",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/books/{{bookId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 Explore OpenAPI",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v3/api-docs"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Documented endpoints', () => pm.expect(pm.response.json().paths).to.have.property('/api/books/{id}/borrow'));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

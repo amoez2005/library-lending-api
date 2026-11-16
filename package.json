@@ -1,0 +1,10 @@
+{
+  "name": "shelf-api-acceptance",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Postman CLI acceptance suite for Shelf",
+  "scripts": {
+    "test:api": "newman run postman/Shelf.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export artifacts/newman.json"
+  },
+  "devDependencies": { "newman": "6.2.1" }
+}
