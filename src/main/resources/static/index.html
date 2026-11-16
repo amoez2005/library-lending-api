@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shelf — Library desk</title>
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar"><a class="brand" href="/">shelf<span>●</span></a><p class="eyebrow">YOUR LIBRARY, IN ORDER</p><nav><a class="active" href="/">▤ &nbsp; Catalog <span>01</span></a><a href="/swagger-ui.html">↗ &nbsp; API explorer</a><a href="/v3/api-docs">⌘ &nbsp; OpenAPI contract</a></nav><div class="sidebar-note"><span class="dot"></span> LOCAL LIBRARY DESK<p>A little less searching.<br>A little more reading.</p></div></aside>
+  <main><header><span>Workspace <span class="muted">/</span> Library catalog</span><a href="https://github.com/amoez2005/library-lending-api">View project ↗</a></header>
+    <section class="intro"><div><p class="eyebrow">GOOD BOOKS. GREAT POSSIBILITIES.</p><h1>Room for your<br>next great read<span>.</span></h1><p class="subtitle">Your collection, connected. Keep every title and every loan<br class="desktop"> right where they belong.</p></div><div class="book-art" aria-hidden="true"><div class="spine one">THE ART OF READING</div><div class="spine two">A WORLD OF IDEAS</div><div class="spine three">ONE MORE CHAPTER</div><span>THE SHELF COLLECTION / VOL. 01</span></div></section>
+    <section class="stats" aria-label="Library statistics"><div><span>CATALOG MATCHES</span><strong id="total">—</strong><small>Titles in current search</small></div><div><span>ON THE SHELF</span><strong id="available">—</strong><small>Available on this page</small></div><div><span>OUT EXPLORING</span><strong id="borrowed">—</strong><small>Borrowed on this page</small></div></section>
+    <section class="catalog"><div class="section-head"><div><p class="eyebrow">THE COLLECTION</p><h2>Every book has a place.</h2></div><button class="primary" id="add">+ Add a book</button></div><form id="search-form" class="search"><label for="query">⌕</label><input id="query" type="search" maxlength="160" placeholder="Search by book title…" aria-label="Search by book title"><button type="submit">Search ↗</button></form><p id="notice" role="status" aria-live="polite"></p><div class="grid" id="books"></div><div class="pagination"><button id="previous">← Previous</button><span id="page-info"></span><button id="next">Next →</button></div></section>
+    <footer><span>SHELF / A SMALL LIBRARY WITH BIG IDEAS</span><span>Built with Java · REST · HAL</span></footer>
+  </main>
+  <dialog id="editor"><form id="book-form"><div class="dialog-head"><h2 id="dialog-title">Add to your shelf</h2><button type="button" id="close" aria-label="Close">×</button></div><input type="hidden" id="book-id"><label>Book title<input id="title" required maxlength="160" placeholder="e.g. The Pragmatic Programmer"></label><label>Author<input id="author" required maxlength="120" placeholder="Author name"></label><label>ISBN-13<input id="isbn" required pattern="[0-9]{13}" maxlength="13" placeholder="13 digits, without hyphens"></label><p id="form-error" role="alert"></p><button class="primary" type="submit" id="save">Save book ↗</button></form></dialog>
+</body></html>
