@@ -4,7 +4,7 @@
 
 Use JDK 21+ and run `./mvnw verify` (`.\mvnw.cmd verify` on Windows). Tests use in-memory H2, start HTTP servers on random ports and require no running application. Spotless validates Google Java Format; `./mvnw spotless:apply` fixes formatting.
 
-Then start the application and run `npm ci` followed by `npm run test:api`. The collection creates a uniquely identified test book and removes it. Do not aim test runs at an unrelated database or service.
+Then start the application and run `npm ci`, `npm run format:check` and `npm run test:api`. Prettier checks the frontend and configuration files. The collection creates a uniquely identified test book and removes it. Do not aim test runs at an unrelated database or service.
 
 ## Test coverage
 

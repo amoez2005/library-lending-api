@@ -1,5 +1,5 @@
 {
-  "recordedAtUtc": "2026-11-16T13:22:36.146460+00:00",
+  "recordedAtUtc": "2026-11-16T13:25:22.547607+00:00",
   "environment": {
     "os": "Windows",
     "jdk": "Eclipse Temurin 25.0.3",
@@ -55,5 +55,12 @@
   "javadoc": "PASS",
   "manualGuiValidation": "Not performed: no browser session available",
   "optionalDockerPostgres": "Not executed locally",
-  "assistance": "AI-assisted implementation and verification under user-authorized accounts"
+  "assistance": "AI-assisted implementation and verification under user-authorized accounts",
+  "frontendFormatting": "PASS (Prettier)",
+  "ci": {
+    "url": "https://github.com/amoez2005/library-lending-api/actions/runs/43875278399",
+    "javaBaseline": 21,
+    "verify": "PASS",
+    "postman": "PASS"
+  }
 }

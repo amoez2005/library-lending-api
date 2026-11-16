@@ -4,7 +4,12 @@
   "private": true,
   "description": "Postman CLI acceptance suite for Shelf",
   "scripts": {
-    "test:api": "newman run postman/Shelf.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export artifacts/newman.json"
+    "test:api": "newman run postman/Shelf.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export artifacts/newman.json",
+    "format:check": "prettier --check src/main/resources/static scripts/*.mjs *.json *.yml .github/workflows/*.yml postman/*.json",
+    "format": "prettier --write src/main/resources/static scripts/*.mjs *.json *.yml .github/workflows/*.yml postman/*.json"
   },
-  "devDependencies": { "newman": "6.2.1" }
+  "devDependencies": {
+    "newman": "6.2.1",
+    "prettier": "3.6.2"
+  }
 }
