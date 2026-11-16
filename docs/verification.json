@@ -1,0 +1,66 @@
+{
+  "recordedAtUtc": "2026-11-16T13:25:22.547607+00:00",
+  "environment": {
+    "os": "Windows",
+    "jdk": "Eclipse Temurin 25.0.3",
+    "releaseTarget": 21,
+    "database": "H2"
+  },
+  "javaTests": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cucumberScenarios": 4,
+  "postman": {
+    "requests": {
+      "total": 18,
+      "pending": 0,
+      "failed": 0
+    },
+    "assertions": {
+      "total": 33,
+      "pending": 0,
+      "failed": 0
+    }
+  },
+  "coverage": {
+    "INSTRUCTION": {
+      "covered": 725,
+      "missed": 5
+    },
+    "BRANCH": {
+      "covered": 22,
+      "missed": 0
+    },
+    "LINE": {
+      "covered": 144,
+      "missed": 2
+    },
+    "COMPLEXITY": {
+      "covered": 63,
+      "missed": 1
+    },
+    "METHOD": {
+      "covered": 52,
+      "missed": 1
+    },
+    "CLASS": {
+      "covered": 12,
+      "missed": 0
+    }
+  },
+  "formatting": "PASS",
+  "javadoc": "PASS",
+  "manualGuiValidation": "Not performed: no browser session available",
+  "optionalDockerPostgres": "Not executed locally",
+  "assistance": "AI-assisted implementation and verification under user-authorized accounts",
+  "frontendFormatting": "PASS (Prettier)",
+  "ci": {
+    "url": "https://github.com/amoez2005/library-lending-api/actions/runs/43875278399",
+    "javaBaseline": 21,
+    "verify": "PASS",
+    "postman": "PASS"
+  }
+}

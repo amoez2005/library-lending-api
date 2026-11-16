@@ -11,13 +11,13 @@ Install **JDK 21 or newer**. Java 21 is the CI baseline; the project was also ve
 Windows PowerShell:
 
 ```powershell
-.\scripts\start.ps1
+.\scripts\start.cmd
 ```
 
 In a second terminal, optionally populate six demonstration titles:
 
 ```powershell
-.\scripts\seed-demo.ps1
+node scripts/seed-demo.mjs
 ```
 
 Linux/macOS (with `JAVA_HOME` pointing to a JDK):
@@ -25,6 +25,8 @@ Linux/macOS (with `JAVA_HOME` pointing to a JDK):
 ```sh
 ./mvnw spring-boot:run
 ```
+
+The optional seed command needs Node.js 18+. The API itself needs only a JDK. The `.cmd` starter also works when local PowerShell scripts are disabled.
 
 Open:
 
@@ -43,11 +45,12 @@ The default **H2 file database** lives in `data/` and survives restarts. No exte
 # Ensure JAVA_HOME points to JDK 21+ (not an old Java runtime).
 .\mvnw.cmd verify
 npm ci
+npm run format:check
 # Keep the application running for this command:
 npm run test:api
 ```
 
-On Linux/macOS, use `./mvnw verify`. `verify` runs unit, repository, HTTP and Cucumber tests, checks Java formatting and generates JavaDoc and coverage reports. `npm run test:api` runs the Postman collection with Newman and cleans up its test book.
+On Linux/macOS, use `./mvnw verify`. `verify` runs unit, repository, HTTP and Cucumber tests, checks Java formatting and generates JavaDoc and coverage reports. `npm run format:check` checks frontend/config formatting. `npm run test:api` runs the Postman collection with Newman and cleans up its test book.
 
 Generated reports:
 

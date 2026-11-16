@@ -4,7 +4,7 @@
 
 Use JDK 21+ and run `./mvnw verify` (`.\mvnw.cmd verify` on Windows). Tests use in-memory H2, start HTTP servers on random ports and require no running application. Spotless validates Google Java Format; `./mvnw spotless:apply` fixes formatting.
 
-Then start the application and run `npm ci` followed by `npm run test:api`. The collection creates a uniquely identified test book and removes it. Do not aim test runs at an unrelated database or service.
+Then start the application and run `npm ci`, `npm run format:check` and `npm run test:api`. Prettier checks the frontend and configuration files. The collection creates a uniquely identified test book and removes it. Do not aim test runs at an unrelated database or service.
 
 ## Test coverage
 
@@ -25,7 +25,7 @@ The generated JaCoCo report is the source of truth for coverage percentages; no 
 ## Course demonstration (students)
 
 1. Show the repository owner, collaborator, assigned issues, branch history and merged pull requests.
-2. Run the service and populate demonstration titles with `scripts/seed-demo.ps1`.
+2. Run the service and populate demonstration titles with `node scripts/seed-demo.mjs`.
 3. Open the frontend, search for a title and create/edit a book.
 4. In Swagger Editor, import `docs/openapi.json`. Inspect the schema and execute requests if the browser permits localhost access. The local Swagger UI is also available.
 5. In Postman, import the collection and environment, run the numbered collection and show real status/body/header results.
