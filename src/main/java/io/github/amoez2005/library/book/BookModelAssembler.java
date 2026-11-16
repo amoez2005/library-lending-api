@@ -16,9 +16,9 @@ public class BookModelAssembler {
         book,
         Link.of(url).withSelfRel(),
         linkTo(methodOn(BookController.class).list("", 0, 12)).withRel("collection"),
-        Link.of(url).withRel("update").withType("PUT"),
+        Link.of(url).withRel("update").withType("application/json"),
         Link.of(url + (book.isBorrowed() ? "/return" : "/borrow"))
             .withRel(book.isBorrowed() ? "return" : "borrow")
-            .withType("POST"));
+            .withType("application/json"));
   }
 }

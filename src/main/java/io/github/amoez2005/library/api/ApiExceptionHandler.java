@@ -5,6 +5,8 @@ import io.github.amoez2005.library.book.BookNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Map;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.*;
@@ -14,6 +16,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 /** Maps domain and validation failures to safe RFC 9457 problem details. */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
   /** Reports a missing resource. */
   @ExceptionHandler(BookNotFoundException.class)

@@ -38,7 +38,7 @@ function renderCard(book) {
     loan.disabled = true;
     try {
       const link = book._links[book.borrowed ? 'return' : 'borrow'];
-      await api(link.href, { method: link.type || 'POST' });
+      await api(link.href, { method: 'POST' });
       await load();
       notice(book.borrowed ? 'Book returned to the shelf.' : 'Book borrowed. Enjoy your next chapter.');
     } catch (error) { notice(error.message, true); }

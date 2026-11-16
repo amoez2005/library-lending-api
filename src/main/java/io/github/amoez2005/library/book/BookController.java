@@ -51,7 +51,7 @@ public class BookController {
                 "totalPages",
                 result.getTotalPages()));
     model.add(linkTo(methodOn(BookController.class).list(q, page, size)).withSelfRel());
-    model.add(linkTo(BookController.class).withRel("create").withType("POST"));
+    model.add(linkTo(BookController.class).withRel("create").withType("application/json"));
     if (result.hasNext())
       model.add(linkTo(methodOn(BookController.class).list(q, page + 1, size)).withRel("next"));
     if (result.hasPrevious())
